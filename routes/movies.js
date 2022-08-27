@@ -6,12 +6,8 @@ const Movie = require("../models/Movie");
 // @access  Public
 router.get('/', async (req, res, next) => {
   try {
-    const movies = Movie.find({});
-    if(movies.length === 0) {
-      res.status(200).json({ response: "No movies found in the database" })
-    } else {
-      res.status(200).json({ data: projects })
-    }
+    const movies = await Movie.find({});
+    res.status(200).json({ data: movies })
   } catch (error) {
     next(error);
   }
@@ -24,10 +20,10 @@ router.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const movie = await Movie.findById(id);
-    if(!movie) {
+    if (!movie) {
       res.status(404).json({ response: "Project not found" })
     } else {
-      res.status(200).json({ data: project })
+      res.status(200).json({ data: movie })
     }
   } catch (error) {
     next(error)
@@ -41,7 +37,7 @@ router.post('/', async (req, res, next) => {
   const { title, year, director, duration, synopsis, image } = req.body;
   try {
     const movie = await Movie.create({ title, year, director, duration, synopsis, image });
-    res.status(201).json({data: movie})
+    res.status(201).json({ data: movie })
   } catch (error) {
     next(error)
   }
@@ -54,7 +50,7 @@ router.put('/:id', async (req, res, next) => {
   const { id } = req.params;
   const { title, year, director, duration, synopsis, image } = req.body;
   try {
-    const updatedProject = await Movie.findByIdAndUpdate(id, { title, year, director, duration, synopsis, image }, {new: true});
+    const updatedProject = await Movie.findByIdAndUpdate(id, { title, year, director, duration, synopsis, image }, { new: true });
     res.status(202).json({ data: updatedProject })
   } catch (error) {
     next(error)
@@ -68,7 +64,7 @@ router.delete('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const movie = await Movie.findByIdAndDelete(id);
-    res.status(202).json({data: movie});
+    res.status(202).json({ data: movie });
   } catch (error) {
     next(error)
   }
